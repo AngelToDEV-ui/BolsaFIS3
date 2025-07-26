@@ -1,0 +1,163 @@
+/* ===================================
+   DIAGRAMA ENTIDAD-RELACIÓN
+   Bolsa de Trabajo FIS-UNCP
+   =================================== */
+
+
+
+    ┌─────────────────────────────────┐                    ┌─────────────────────────────────┐
+    │           ESTUDIANTES           │                    │            EMPRESAS             │
+    ├─────────────────────────────────┤                    ├─────────────────────────────────┤
+    │ 🔑 id_estudiante (PK)          │                    │ 🔑 id_empresa (PK)             │
+    │ 👤 nombres                      │                    │ 🏢 nombre                       │
+    │ 👤 apellidos                    │                    │ 🆔 ruc (UNIQUE)                │
+    │ 🆔 dni (UNIQUE)                │                    │ 📧 correo (UNIQUE)              │
+    │ 📧 correo (UNIQUE)              │                    │ 🔒 contrasena_hash              │
+    │ 🎂 anio_nacimiento              │                    │ 📝 descripcion                  │
+    │ 🔒 contrasena_hash              │                    │ 🖼️ logo                         │
+    │ 📸 foto_perfil                  │                    │ 🎥 video_presentacion           │
+    │ 📄 cv_archivo                   │                    │ 📅 fecha_registro               │
+    │ 📅 fecha_registro               │                    │ ✅ activo                       │
+    │ ✅ activo                       │                    └─────────────────────────────────┘
+    └─────────────────────────────────┘                                      │
+                     │                                                       │
+                     │                                                       │ 1:N
+                     │ 1:N                                                   │
+                     │                                                       ▼
+                     ▼                          ┌─────────────────────────────────┐
+    ┌─────────────────────────────────┐         │        OFERTAS_LABORALES        │
+    │          POSTULACIONES          │         ├─────────────────────────────────┤
+    ├─────────────────────────────────┤         │ 🔑 id_oferta (PK)              │
+    │ 🔑 id_postulacion (PK)         │         │ 🔗 id_empresa (FK)             │
+    │ 🔗 id_estudiante (FK)          │◄────────┤ 📝 titulo                       │
+    │ 🔗 id_oferta (FK)              │         │ 📝 descripcion                  │
+    │ 📅 fecha_postulacion            │         │ 📋 requisitos                   │
+    │ 📊 estado                       │         │ 💰 salario_min                  │
+    │ 💬 comentarios                  │         │ 💰 salario_max                  │
+    └─────────────────────────────────┘         │ 🏢 modalidad                    │
+                     ▲                          │ 📍 ubicacion                    │
+                     │                          │ 📅 fecha_publicacion            │
+                     │ N:1                      │ ⏰ fecha_cierre                 │
+                     │                          │ ✅ activo                       │
+                     └──────────────────────────┤                                 │
+                                                └─────────────────────────────────┘
+                                                                  │
+                                                                  │ 1:N
+                                                                  │
+                                                                  ▼
+                                               ┌─────────────────────────────────┐
+                                               │       AUDITORIA_OFERTAS         │
+                                               ├─────────────────────────────────┤
+                                               │ 🔑 id_auditoria (PK)           │
+                                               │ 🔗 id_oferta (FK)              │
+                                               │ 🔗 id_empresa                   │
+                                               │ 📝 accion                       │
+                                               │ 📅 fecha_accion                 │
+                                               │ 👤 usuario_sistema              │
+                                               └─────────────────────────────────┘
+
+/* ===================================
+   RELACIONES Y CARDINALIDADES
+   =================================== */
+
+1. EMPRESAS (1) ←→ (N) OFERTAS_LABORALES
+   - Una empresa puede crear múltiples ofertas laborales
+   - Cada oferta pertenece a una sola empresa
+
+2. OFERTAS_LABORALES (1) ←→ (N) POSTULACIONES
+   - Una oferta puede recibir múltiples postulaciones
+   - Cada postulación es para una sola oferta
+
+3. ESTUDIANTES (1) ←→ (N) POSTULACIONES
+   - Un estudiante puede realizar múltiples postulaciones
+   - Cada postulación es de un solo estudiante
+
+4. OFERTAS_LABORALES (1) ←→ (N) AUDITORIA_OFERTAS
+   - Una oferta puede tener múltiples registros de auditoría
+   - Cada registro de auditoría pertenece a una sola oferta
+
+5. ESTUDIANTES (N) ←→ (M) OFERTAS_LABORALES (a través de POSTULACIONES)
+   - Relación muchos a muchos entre estudiantes y ofertas
+   - La tabla POSTULACIONES actúa como tabla intermedia
+
+/* ===================================
+   RESTRICCIONES Y CONSTRAINTS
+   =================================== */
+
+✅ CLAVES PRIMARIAS:
+   - Cada tabla tiene una clave primaria auto-incremental
+
+✅ CLAVES FORÁNEAS:
+   - OfertasLaborales.id_empresa → Empresas.id_empresa
+   - Postulaciones.id_estudiante → Estudiantes.id_estudiante
+   - Postulaciones.id_oferta → OfertasLaborales.id_oferta
+   - AuditoriaOfertas.id_oferta → OfertasLaborales.id_oferta
+
+✅ RESTRICCIONES ÚNICAS:
+   - Estudiantes: dni, correo
+   - Empresas: ruc, correo
+   - Administradores: usuario, correo
+   - Postulaciones: (id_estudiante, id_oferta) - Evita postulaciones duplicadas
+
+✅ CHECKS:
+   - DNI: 8 dígitos numéricos
+   - RUC: 11 dígitos numéricos
+   - Correos: formato email válido
+   - Nombres/Apellidos: solo letras y espacios
+   - Salarios: salario_min <= salario_max
+   - Estados: valores predefinidos
+   - Modalidad: Presencial, Remoto, Híbrido
+
+✅ ÍNDICES:
+   - Índices en campos de búsqueda frecuente (DNI, correo, RUC, fechas)
+   - Índices en claves foráneas para mejorar JOINs
+
+/* ===================================
+   ENTIDADES Y ATRIBUTOS
+   =================================== */
+
+🎓 ESTUDIANTES:
+   - Información personal (nombres, apellidos, DNI, correo)
+   - Datos académicos (año nacimiento para edad)
+   - Archivos (foto perfil, CV)
+   - Control (contraseña, fecha registro, estado activo)
+
+🏢 EMPRESAS:
+   - Información corporativa (nombre, RUC, correo)
+   - Presentación (descripción, logo, video)
+   - Control (contraseña, fecha registro, estado activo)
+
+👑 ADMINISTRADORES:
+   - Datos de acceso (usuario, contraseña)
+   - Información personal (nombre, correo)
+   - Control (fecha creación, estado activo)
+
+💼 OFERTAS_LABORALES:
+   - Contenido (título, descripción, requisitos)
+   - Condiciones (salarios, modalidad, ubicación)
+   - Control (fechas publicación/cierre, estado activo)
+
+📋 POSTULACIONES:
+   - Relación estudiante-oferta
+   - Estado del proceso (Pendiente, Revisado, Seleccionado, Rechazado)
+   - Comunicación (comentarios de la empresa)
+   - Control (fecha postulación)
+
+📊 AUDITORIA_OFERTAS:
+   - Registro de cambios en ofertas
+   - Trazabilidad (acción, fecha, usuario)
+   - Cumplimiento normativo
+
+/* ===================================
+   FLUJO DE DATOS PRINCIPAL
+   =================================== */
+
+1. 🏢 EMPRESA se registra en el sistema
+2. 🏢 EMPRESA crea OFERTAS_LABORALES
+3. 🎓 ESTUDIANTE se registra en el sistema
+4. 🎓 ESTUDIANTE ve ofertas disponibles
+5. 🎓 ESTUDIANTE crea POSTULACIONES a ofertas
+6. 🏢 EMPRESA revisa POSTULACIONES recibidas
+7. 🏢 EMPRESA actualiza estado de POSTULACIONES
+8. 👑 ADMINISTRADOR supervisa todo el proceso
+9. 📊 AUDITORIA_OFERTAS registra cambios automáticamente

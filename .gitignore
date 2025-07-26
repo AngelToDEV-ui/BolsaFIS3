@@ -1,0 +1,45 @@
+# Archivos de configuración y temporales
+includes/config.php
+*.log
+.DS_Store
+Thumbs.db
+
+# Archivos subidos por usuarios (contienen datos privados)
+uploads/
+reports/*.html
+
+# Archivos de desarrollo y testing
+test_*.php
+simple_test_reports.php
+
+# Archivos específicos de servidor
+.htaccess
+php.ini
+
+# Directorios de librerías externas
+vendor/
+node_modules/
+
+# Archivos de backup
+*.bak
+*.backup
+*.sql.bak
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema Windows
+desktop.ini
+*.lnk
+
+# Archivos temporales de PHP
+*.tmp
+temp/
+
+# Variables de entorno (si usas archivos .env)
+.env
+.env.local
+.env.production

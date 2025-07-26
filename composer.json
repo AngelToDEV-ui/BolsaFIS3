@@ -1,0 +1,10 @@
+{
+    "name": "fis-uncp/bolsa-trabajo",
+    "description": "Sistema de Bolsa de Trabajo FIS-UNCP",
+    "require": {
+        "tecnickcom/tcpdf": "^6.4"
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    }
+}
