@@ -6,7 +6,7 @@ Sistema web para la gestión de ofertas laborales dirigido a estudiantes de la F
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/TU_USUARIO/BolsaFIS3.git
+git clone https://github.com/AngelToDEV-ui/BolsaFIS3.git
 cd BolsaFIS3
 ```
 
@@ -130,12 +130,17 @@ extension=pdo_sqlsrv
 ```
 
 #### 3. Configurar Conexión:
-Editar `includes/config.php` con tus datos:
+Copia y edita el archivo de configuración:
+```bash
+cp includes/config.example.php includes/config.php
+```
+
+Luego edita `includes/config.php` con tus datos de SQL Server:
 ```php
-define('DB_SERVER', 'ANGEL');
-define('DB_USER', 'sa');
-define('DB_PASSWORD', 'angelito@10');
-define('DB_NAME', 'BolsaTrabajoFIS');
+$serverName = "TU_SERVIDOR\\SQLEXPRESS";
+$database = "BolsaFIS3";
+$username = "tu_usuario";
+$password = "tu_contraseña";
 ```
 
 #### 4. Configurar Servidor Web:
@@ -144,62 +149,72 @@ define('DB_NAME', 'BolsaTrabajoFIS');
 
 ## 👥 Credenciales por Defecto
 
-### Administradores:
-- **Usuario:** `admin` **Contraseña:** `admin123`
-- **Usuario:** `fis_admin` **Contraseña:** `fis2024`
+### 🔑 Usuario Administrador:
+- **Usuario:** `admin` 
+- **Contraseña:** `admin123`
 
-### Estudiantes de Prueba:
-- **Correo:** `juan.perez@uncp.edu.pe` **Contraseña:** `juan123`
-- **Correo:** `maria.rodriguez@uncp.edu.pe` **Contraseña:** `maria123`
-- **Correo:** `carlos.quispe@uncp.edu.pe` **Contraseña:** `carlos123`
+### 📋 Usuarios de Prueba:
+Los usuarios de prueba se crean automáticamente al ejecutar el script `06_insert_admin.sql`. 
+Para seguridad, cambia las contraseñas después de la instalación.
 
-### Empresas de Prueba:
-- **Correo:** `rrhh@techsolutions.com` **Contraseña:** `tech123`
-- **Correo:** `contacto@innovate.com` **Contraseña:** `innova2024`
+**Nota:** Las credenciales específicas están en los scripts de la base de datos.
 
 ## 📁 Estructura del Proyecto
 ```
 BolsaFIS3/
-├── database/
+├── admin/                    # Panel administrativo
+│   ├── dashboard.php        # Dashboard principal
+│   ├── students.php         # Gestión de estudiantes
+│   └── companies.php        # Gestión de empresas
+├── company/                 # Panel de empresas
+│   ├── dashboard.php        # Dashboard empresa
+│   ├── profile.php          # Perfil empresa
+│   ├── public_profile.php   # Perfil público
+│   └── applications.php     # Gestión postulaciones
+├── student/                 # Panel de estudiantes
+│   ├── dashboard.php        # Dashboard estudiante
+│   ├── profile.php          # Perfil estudiante
+│   └── applications.php     # Mis postulaciones
+├── database/                # Scripts de base de datos
 │   ├── 01_create_database.sql
 │   ├── 02_create_tables.sql
 │   ├── 03_create_functions.sql
 │   ├── 04_create_procedures.sql
 │   ├── 05_create_triggers.sql
 │   └── 06_insert_admin.sql
-├── frontend/
+├── includes/                # Archivos de configuración
+│   ├── config.example.php   # Plantilla de configuración
+│   └── config.php          # Configuración actual (no incluido)
+├── public/                  # Recursos públicos
 │   ├── css/
 │   │   └── styles.css
 │   ├── js/
-│   │   └── scripts.js
-│   ├── uploads/
-│   │   ├── fotos/
-│   │   ├── cvs/
-│   │   ├── logos/
-│   │   └── videos/
-│   ├── index.html
-│   ├── login.html
-│   ├── registro_estudiante.html
-│   ├── registro_empresa.html
-│   ├── dashboard_estudiante.html
-│   ├── dashboard_empresa.html
-│   └── dashboard_admin.html
-└── backend/
-    ├── config/
-    │   └── database.php
-    ├── controllers/
-    │   ├── auth.php
-    │   ├── estudiante.php
-    │   ├── empresa.php
-    │   └── admin.php
-    └── uploads/
-        └── handler.php
+│   │   └── main.js
+│   └── images/
+│       ├── logo-fis.svg
+│       └── logo-uncp.png
+├── reports/                 # Sistema de reportes
+│   ├── generate_reports.php
+│   └── README.md
+├── uploads/                 # Archivos subidos (no incluido)
+│   ├── cvs/
+│   ├── logos/
+│   ├── photos/
+│   └── videos/
+├── index.html              # Página principal
+├── login.php               # Sistema de login
+├── register.php            # Registro de usuarios
+├── logout.php              # Cerrar sesión
+├── check_duplicates.php    # Validación AJAX
+└── README.md               # Este archivo
+```
 
-## Configuración de Base de Datos
-- Servidor: ANGEL
-- Usuario: sa
-- Contraseña: angelito@10
-- Base de datos: BolsaTrabajoFIS
+## ⚙️ Configuración de Base de Datos
+
+### Configuración requerida:
+- **Motor:** SQL Server 2019+ o SQL Express
+- **Base de datos:** `BolsaFIS3`
+- **Configurar en:** `includes/config.php` (usar plantilla example)
 
 ## Tipos de Usuario
 1. **Estudiante**: Registro con validaciones de edad, postulación a ofertas
